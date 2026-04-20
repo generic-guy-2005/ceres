@@ -1,0 +1,11 @@
+# Environment
+env/
+.venv/
+
+# Database
+instance/
+
+# Personal
+D:\\Obsidian\\Management\\Monetary/
+static/
+__pycache__/
