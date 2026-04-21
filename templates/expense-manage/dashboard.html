@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Manager</title>
+    <link rel="stylesheet" href="/static/css/em_dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="main-board">
+        <div class="left-board">
+            <div class="upper-left-board">
+                <div class="cash-card shadow">
+                    <p>Cash<br>Rp <span style="font-size: 24px;">{{ cash }}</span></p>
+                    <a href="/em-add-cash">
+                        <img src="/static/placeholder/addition.png" alt="Edit" class="add-icon">
+                    </a>
+                </div>
+                <div class="digital-card shadow">
+                    <p>Digital<br>Rp <span style="font-size: 24px;">{{ digital }}</span></p>
+                    <a href="/em-add-digital">
+                        <img src="/static/placeholder/addition.png" alt="Edit" class="add-icon">
+                    </a>
+                </div>
+                <div class="date-card shadow">
+                    <p>Date<br>{{ day_name }} <span style="font-size: 32px;">{{ date_number }} {{ month_name }}, {{
+                            current_year }}</span></p>
+                </div>
+            </div>
+            <div class="lower-left-board">
+                <div style="display: flex; gap: 10px">
+                    <div style="width: 40%;">
+                        <div class="saving-card shadow">
+                            <p>Saving</p>
+                            <p style="font-size: 32px;"><span class="current-amount">Rp {{ current }}</span> /<br> <span
+                                    class="current-amount">Rp {{ target }}</span></p>
+                            <a href="/em-add-saving">
+                                <img src="/static/placeholder/addition.png" alt="Edit" class="add-icon">
+                            </a>
+                        </div>
+                        <div class="saving-card shadow" style="margin-bottom: 10px;">
+                            <p>Goal</p>
+                            <p style="font-size: 24px;">The Save</p>
+                            <p style="position: absolute; bottom: 10px; left: 10px;">Save at least Rp50.000</p>
+                            <img src="/static/placeholder/business-report.png" alt=""
+                                style="position: absolute; overflow: hidden; width: 45%; right: 10px; top: 10px">
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <a href="/em-finalize" class="btn shadow"
+                                style="text-decoration: none; background-color: #525252;">Finalize</a>
+                        </div>
+                        <!-- <div style="margin-top: 20px;">
+                            <a href="/em-debug" class="btn shadow"
+                                style="text-decoration: none; background-color: #525252;">Debug</a>
+                        </div> -->
+                    </div>
+                    <div style="position: relative; width: 60%;">
+                        {% if media %}
+                        {% if media.filetype == 'img' %}
+                        <img src="{{ url_for('static', filename=media.filepath) }}" alt=""
+                            style="width: 100%; border-radius: 10px;">
+                        <a href="/em-delete-media/{{ media.id }}">
+                            <img src="/static/placeholder/trash-bin.png" alt="Edit" class="add-icon" style="top: 35px">
+                        </a>
+                        {% else %}
+                        <video src="{{ url_for('static', filename=media.filepath ) }}" autoplay muted loop
+                            style="width: 100%; border-radius: 10px;"></video>
+                        <a href="/em-delete-media/{{ media.id }}">
+                            <img src="/static/placeholder/trash-bin.png" alt="Edit" class="add-icon" style="top: 35px">
+                        </a>
+                        {% endif %}
+                        {% else %}
+                        <img src="/static/placeholder/2aa125b9910f23b4e4ccabb84f11e038.jpg" alt=""
+                            style="width: 100%; border-radius: 10px;">
+                        {% endif %}
+                        <a href="/em-upload-media">
+                            <img src="/static/placeholder/addition.png" alt="Edit" class="add-icon">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-board">
+            <div class="card-form shadow">
+                <p style="font-size: 24px; margin-bottom: 10px; background-color: #B2DA5D;">Add Expenses</p>
+            </div>
+
+            <div class="content-form">
+                <form action="/em-dashboard" method="POST">
+                    <div class="section">
+                        <label for="name">Name</label> <br>
+                        <input type="text" name="name" id="name" min="0" class="field"
+                            style="width: 95.5%; border-radius: 10px; padding: 10px;">
+                    </div>
+                    <div class="section">
+                        <label for="cost">Cost</label> <br>
+                        <input type="number" name="cost" id="cost" min="0" class="field"
+                            style="width: 95.5%; border-radius: 10px; padding: 10px;">
+                    </div>
+                    <div class="section">
+                        <label for="type">Type</label> <br>
+                        <select name="type" id="type" class="field"
+                            style="width: 100.5%; border-radius: 10px; padding: 10px; margin-top: 2px;">
+                            <option value="cash">Cash</option>
+                            <option value="digital">Digital</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="submit" value="Add" class="btn">
+                    </div>
+                </form>
+            </div>
+
+            {% for expense in expenses %}
+            <div class="expense-cards shadow" {% if expense.type=="cash" %} style="background: #525252;
+background: linear-gradient(45deg, rgba(82, 82, 82, 1) 50%, rgba(178, 218, 93, 1) 100%);" {% else %} style="background: #525252;
+background: linear-gradient(45deg, rgba(82, 82, 82, 1) 50%, rgba(34, 107, 226, 1) 100%);" {% endif %}>
+                <p style="font-size: 32px;">Rp {{ formatter(expense.cost) }}</p>
+                <p>{{ expense.item }}</p>
+                <a href="/em-edit-expenses/{{ expense.id }}">
+                    <img src="/static/placeholder/addition.png" alt="Edit" class="add-icon">
+                </a>
+                <a href="/em-delete-expenses/{{ expense.id }}">
+                    <img src="/static/placeholder/trash-bin.png" alt="Edit" class="add-icon" style="top: 35px">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'no_media') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Missing Media',
+                text: 'Please upload an image before finalizing the report!',
+                confirmButtonColor: '#3085d6'
+            });
+        } else if (urlParams.get('info') === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Saved Successfully',
+                text: 'Report successfully saved to Obsidian!!',
+                confirmButtonColor: '#3085d6'
+            });
+        } else if (urlParams.get('info') === 'save_file') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Saved Successfully',
+                text: 'Report successfully saved to Obsidian!',
+                confirmButtonColor: '#3085d6'
+            });
+        } else if (urlParams.get('error') === 'existed') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Report Existed',
+                text: "Report exist on Obsidian, can't overwrite!",
+                confirmButtonColor: '#3085d6'
+            });
+        }
+    </script>
+</body>
+
+</html>
