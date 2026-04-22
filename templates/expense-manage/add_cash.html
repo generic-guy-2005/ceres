@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/em_add_cash.css">
+    <title>Expense Manager</title>
+</head>
+
+<body>
+    <div class="main-board">
+        <div>
+            <form action="/em-update-cash" method="POST">
+                <div class="section">
+                    <label for="cash">Value</label> <br>
+                    <input type="number" name="cash" id="cash" min="0" class="cash-field">
+                </div>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px; margin-top: 10px;">
+                    <a class="btn" style="background-color: #B2DA5D; text-decoration: none; font-size: 14px;"
+                        href="/em-dashboard">Cancel</a>
+                    <input type="submit" name="update_cash" id="update_cash" value="Done" class="btn" style="background-color: #226be2; border: none;">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
