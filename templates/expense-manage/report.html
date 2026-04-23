@@ -1,0 +1,41 @@
+
+<div style="display: flex; gap: 6px; color: white; margin: 0 100px 0 100px; align-items: flex-start">
+    <div style="width: 50%; display: flex; flex-direction: column; gap: 6px">
+        <div style="width: 100%; border-radius: 10px; background-color: #B2DA5D; height: 85px">
+            <div style="padding: 10px; display: flex">
+                <p style="width: 50%; margin: 0">Cash Leftover<br>Rp <span
+                        style="font-size: 32px"> {{ helper(cash_left) }} </span> </p>
+                <p style="width: 50%; margin: 0">Digital Leftover<br>Rp <span
+                        style="font-size: 32px"> {{ helper(digital_left) }} </span> </p>
+            </div>
+        </div>
+        <div style="width: 100%; border-radius: 10px; background-color: #FDB562; height: 85px; padding: 10px;">
+            <p style="margin: 0">Total Spent<br>Rp <span style="font-size: 32px"> {{ helper(total_spent) }} </span> </p>
+        </div>
+        <div style="width: 100%; border-radius: 10px;  background: #B2DA5D; background: #020024; background: linear-gradient(45deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%); color: white; padding: 10px;">
+            <p style="margin: 0 0 10px 0">Detail</p>
+            {% for expense in expenses %}
+            <div style="display: flex; padding: 0 10px 0 10px">
+                <p style="width: 50%; margin: 0">{{ expense.item }}</p>
+                <p style="width: 50%; text-align: right; margin: 0">{{ helper(expense.cost) }}</p>
+            </div>
+            {% endfor %}
+            <hr>
+            <div style="display: flex; padding: 0 10px 8px 10px">
+                <p style="width: 50%; margin: 0">Total</p>
+                <p style="width: 50%; text-align: right; margin: 0">{{ helper(total_spent) }}</p>
+            </div>
+        </div>
+    </div>
+    {% if type == 'img' %}
+        <!-- <picture style="border-radius: 10px; width: 50%">
+            <source srcset="{{ linux_media }}">
+            <img src="{{ win_media }}" alt="">
+        </picture> -->
+        <img src="{{ media }}" style="border-radius: 10px; width: 50%">
+    {% else %}
+        <video style="border-radius: 10px; width: 50%" autoplay muted loop>
+            <source src="{{ media }}">
+        </video>
+    {% endif %}
+</div>
