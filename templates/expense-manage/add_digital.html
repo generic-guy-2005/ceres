@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expense Manager</title>
     <link rel="stylesheet" href="/static/css/em_add_cash.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -13,17 +14,39 @@
         <div>
             <form action="/em-update-digital" method="POST">
                 <div class="section">
-                    <label for="digital">Value</label> <br>
-                    <input type="number" name="digital" id="digital" min="0" class="cash-field">
+                    <label for="digital">Current Digital Balance</label> <br>
+                    <input type="number" name="digital" id="digital" min="0" class="cash-field" value="{{ current_digital }}">
                 </div>
                 <div style="display: flex; gap: 10px; margin-bottom: 10px; margin-top: 10px;">
                     <a class="btn" style="background-color: #B2DA5D; text-decoration: none; font-size: 14px;"
                         href="/em-dashboard">Cancel</a>
-                    <input type="submit" name="update_digital" id="update_digital" value="Done" class="btn" style="background-color: #226be2; border: none;">
+                    <input type="submit" name="update_digital" id="update_digital" value="Update" class="btn" style="background-color: #226be2; border: none;">
+                </div>
+            </form>
+
+            <form action="/em-transfer-to-cash" method="POST">
+                <div class="section">
+                    <label for="transfer">Amount to Transfer</label> <br>
+                    <input type="number" name="transfer" id="transfer" min="0" class="cash-field">
+                </div>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px; margin-top: 10px;">
+                    <input type="submit" name="execute_transfer" id="execute_transfer" value="Transfer" class="btn" style="background-color: #226be2; border: none;">
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'amount') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Unsusfficient Amount',
+                text: 'Digital balance is not sufficient!',
+                confirmButtonColor: '#3085d6'
+            });
+        } 
+    </script>
 </body>
 
 </html>

@@ -14,12 +14,12 @@
             <form action="/em-update-cash" method="POST">
                 <div class="section">
                     <label for="cash">Value</label> <br>
-                    <input type="number" name="cash" id="cash" min="0" class="cash-field">
+                    <input type="number" name="cash" id="cash" min="0" class="cash-field" value="{{ current_cash }}">
                 </div>
                 <div style="display: flex; gap: 10px; margin-bottom: 10px; margin-top: 10px;">
                     <a class="btn" style="background-color: #B2DA5D; text-decoration: none; font-size: 14px;"
                         href="/em-dashboard">Cancel</a>
-                    <input type="submit" name="update_cash" id="update_cash" value="Done" class="btn" style="background-color: #226be2; border: none;">
+                    <input type="submit" name="update_cash" id="update_cash" value="Update" class="btn" style="background-color: #226be2; border: none;">
                 </div>
             </form>
         </div>
