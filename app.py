@@ -140,10 +140,17 @@ date_number = ordinal_filter(sync_time()[0].strftime("%d"))
 
 @app.route('/', methods=['GET'])
 def index():
+    print("Hit")
     return render_template('index.html')
+
+@app.route('/jm-dashboard', methods=['POST', 'GET'])
+def journal_dashboard():
+    print("Hit")
+    return render_template('expense-manage/test.html')
 
 @app.route('/em-dashboard', methods=['POST', 'GET'])
 def expense_dashboard():
+    print("Hit")
     featured_media = Media.query.filter(Media.uploaded_at >= sync_time()[4], Media.uploaded_at < sync_time()[5]).order_by(Media.uploaded_at.desc()).first()
 
     if featured_media:
@@ -193,11 +200,14 @@ def expense_dashboard():
 
 @app.route('/em-add-cash', methods=['GET', 'POST'])
 def expense_cash():
-    return render_template('expense-manage/add_cash.html')
+    cash_value = int(load_cash())
+    return render_template('expense-manage/add_cash.html', current_cash = cash_value)
 
 @app.route('/em-add-digital', methods=['GET', 'POST'])
 def expense_digital():
-    return render_template('expense-manage/add_digital.html')
+    digital_value = load_digital()
+    digital_value = int(digital_value)
+    return render_template('expense-manage/add_digital.html', current_digital = digital_value)
 
 @app.route('/em-add-saving', methods=['GET', 'POST'])
 def expense_saving():
@@ -276,6 +286,7 @@ def save_media():
 def delete_media(id):
     media = Media.query.get_or_404(id)
     file_path = os.path.join(current_app.root_path, 'static', media.filepath.lstrip('/'))
+    print(file_path)
 
     try:
         if os.path.exists(file_path):
@@ -291,6 +302,28 @@ def delete_media(id):
             return redirect('/em-dashboard')
     except:
         print(f"Media {media.id} is failed to delete")
+
+@app.route('/em-transfer-to-cash', methods=['POST', 'GET'])
+def transfer():
+
+    if request.method == 'POST':
+        total_transfer = request.form.get('transfer')
+        total_transfer = float(total_transfer)
+        digital_value = load_digital()
+        
+        if total_transfer > digital_value:
+            return redirect(url_for('expense_digital', error='amount'))
+        
+        cash_value = load_cash()
+        digital_value = digital_value - total_transfer
+        cash_value = cash_value + total_transfer
+
+        data = load_all_data()
+        data['cash'] = float(cash_value)
+        data['digital'] = float(digital_value)
+
+        save_all_data(data)
+        return redirect('/em-dashboard')
 
 @app.route('/em-finalize')
 def finalize():
@@ -316,7 +349,7 @@ def finalize():
         print(f"Latest media path exist: {latest_path}")
         
         win_sys_path = os.path.join(r"D:\Obsidian\Server\static", latest_path.lstrip('/'))
-        linux_sys_path = os.path.join(r"/mnt/data/Obsidian/Server/static/", latest_path.lstrip('/'))
+        linux_sys_path = os.path.join(r"/mnt/data/Obsidian/Server/Ceres/static/", latest_path.lstrip('/'))
         print(f"System path available: {win_sys_path} / {linux_sys_path}")
 
         win_abs_path = "file:///" + win_sys_path.replace("\\", "/")
